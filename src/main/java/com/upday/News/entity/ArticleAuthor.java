@@ -1,9 +1,9 @@
 package com.upday.News.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -16,21 +16,25 @@ import javax.persistence.*;
  * @see lombok
  */
 @Entity
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticleAuthor {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @ManyToOne
-    @JoinColumn(name = "article_id")
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected ArticleAuthorPK articleAuthorPK = new ArticleAuthorPK();
+    @JoinColumn(name = "article_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Article article;
-    @ManyToOne
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Author author;
+
+    public ArticleAuthor(ArticleAuthorPK articleAuthorPK) {
+        this.articleAuthorPK = articleAuthorPK;
+    }
 
     public ArticleAuthor(Article article, Author author) {
         this.article = article;
