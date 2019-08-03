@@ -52,9 +52,9 @@ public class Article implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(name = "text")
     private String text;
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<ArticleAuthor> authors;
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<ArticleKeyword> keywords;
 
     public Article(Long id) {
