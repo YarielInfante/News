@@ -1,4 +1,4 @@
-package com.upday.News.web;
+package com.upday.News.web.rest;
 
 import com.upday.News.exception.ErrorCode;
 import com.upday.News.web.dto.Response;

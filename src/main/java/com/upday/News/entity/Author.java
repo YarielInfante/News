@@ -1,34 +1,33 @@
 package com.upday.News.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
 /**
- * Represents a Keyword Entity.
+ * Represents an Author entity.
  *
  * @see Entity
  * @see lombok
  */
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Keyword {
+public class Author {
 
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Size(min = 1, max = 300)
-    private String keyword;
+    private String name;
 
-    public Keyword(long id) {
+    public Author(long id) {
         this.id = id;
     }
 }
