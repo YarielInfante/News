@@ -26,6 +26,8 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
 	implementation 'org.projectlombok:lombok:1.18.8'
+	implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
+	implementation 'io.reactivex:rxjava-reactive-streams:1.2.1'
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

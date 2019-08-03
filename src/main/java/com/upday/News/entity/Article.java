@@ -1,16 +1,22 @@
 package com.upday.News.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * Represents an Article entity.
+ *
+ * @see Entity
+ * @see lombok
+ */
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Article {
@@ -27,7 +33,8 @@ public class Article {
     @Column(name = "publish_date")
     private Date publishDate;
     private String author;
-    @OneToMany(mappedBy = "keyword")
+    private String text;
+    @OneToMany(mappedBy = "id", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Collection<ArticleKeyword> keywords;
 
 }
