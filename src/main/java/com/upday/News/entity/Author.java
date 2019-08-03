@@ -12,19 +12,13 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 
-/**
- * Represents a Keyword Entity.
- *
- * @see Entity
- * @see lombok
- */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "keyword")
-public class Keyword implements Serializable {
+@Table(name = "author")
+public class Author implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -36,13 +30,12 @@ public class Keyword implements Serializable {
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "name")
-    private String keyword;
+    private String name;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "keyword")
-    private Collection<ArticleKeyword> articleKeywordCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    private Collection<ArticleAuthor> articleAuthorCollection;
 
-
-    public Keyword(long id) {
+    public Author(long id) {
         this.id = id;
     }
 }
