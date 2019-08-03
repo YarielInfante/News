@@ -1,12 +1,16 @@
 package com.upday.News.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Represents a Keyword Entity.
@@ -14,19 +18,29 @@ import javax.validation.constraints.Size;
  * @see Entity
  * @see lombok
  */
-@Entity
-@Data
-@Builder
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-public class Keyword {
+@NoArgsConstructor
+@Entity
+@Table(name = "keyword")
+public class Keyword implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Size(min = 1, max = 300)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Long id;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "name")
     private String keyword;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "keyword")
+    private Collection<ArticleKeyword> articleKeywordCollection;
+
 
     public Keyword(long id) {
         this.id = id;

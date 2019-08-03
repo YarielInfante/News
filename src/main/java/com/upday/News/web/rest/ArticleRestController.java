@@ -4,6 +4,7 @@ import com.upday.News.entity.Article;
 import com.upday.News.service.IArticleService;
 import com.upday.News.web.dto.Response;
 import com.upday.News.web.dto.request.AddArticleRequest;
+import com.upday.News.web.dto.request.UpdateArticleRequest;
 import com.upday.News.web.dto.response.ArticleResponse;
 import com.upday.News.web.mapper.ArticleMapper;
 import io.reactivex.Single;
@@ -30,8 +31,6 @@ public class ArticleRestController {
 
     /**
      * Injecting dependencies.
-     *
-     * @param articleService
      */
     @Autowired
     public ArticleRestController(IArticleService articleService) {
@@ -49,7 +48,7 @@ public class ArticleRestController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Single<ResponseEntity> addAuthor(@Valid @RequestBody final AddArticleRequest addArticleRequest) {
+    public Single<ResponseEntity<Response>> addArticle(@Valid @RequestBody final AddArticleRequest addArticleRequest) {
 
         // Mapping to Article entity
         Article article = Optional.of(addArticleRequest).map(ArticleMapper.toArticle).get();
@@ -79,6 +78,25 @@ public class ArticleRestController {
                                         Optional.of(article).map(ArticleMapper.toArticleResponse).get())
                         )
                 );
+    }
+
+    /**
+     * Http Put method to update an Article.
+     *
+     * @param updateArticleRequest an instance of AddArticleRequest
+     * @return a http 201 created status with its uri of entity created. It an error occurs
+     */
+    @PatchMapping(
+            value = "/{articleId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Single<ResponseEntity<Response>> updateArticle(@PathVariable long articleId, @Valid @RequestBody final UpdateArticleRequest updateArticleRequest) {
+
+
+        return articleService.update(ArticleMapper.toArticle(articleId, updateArticleRequest))
+                .subscribeOn(Schedulers.io())
+                .toSingle(() -> ResponseEntity.ok(Response.successNoData()));
     }
 
 

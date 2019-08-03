@@ -1,9 +1,7 @@
 package com.upday.News.service.implementation;
 
 import com.upday.News.entity.*;
-import com.upday.News.repository.IArticleRepository;
-import com.upday.News.repository.IAuthorRepository;
-import com.upday.News.repository.IKeywordRepository;
+import com.upday.News.repository.*;
 import com.upday.News.service.IArticleService;
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -23,12 +21,16 @@ public class ArticleService implements IArticleService {
     private final IArticleRepository articleRepository;
     private final IKeywordRepository keywordRepository;
     private final IAuthorRepository authorRepository;
+    private final IArticleKeywordRepository articleKeywordRepository;
+    private final IArticleAuthorRepository articleAuthorRepository;
 
     @Autowired
-    public ArticleService(IArticleRepository articleRepository, IKeywordRepository keywordRepository, IAuthorRepository authorRepository) {
+    public ArticleService(IArticleRepository articleRepository, IKeywordRepository keywordRepository, IAuthorRepository authorRepository, IArticleKeywordRepository articleKeywordRepository, IArticleAuthorRepository articleAuthorRepository) {
         this.articleRepository = articleRepository;
         this.keywordRepository = keywordRepository;
         this.authorRepository = authorRepository;
+        this.articleKeywordRepository = articleKeywordRepository;
+        this.articleAuthorRepository = articleAuthorRepository;
     }
 
 
@@ -37,6 +39,7 @@ public class ArticleService implements IArticleService {
     public Single<Long> add(Article article) {
         return Single.create(emitter -> {
 
+            Article save = articleRepository.save(article);
 
             Set<ArticleKeyword> keywords = article.getKeywords().stream()
                     .map(k -> {
@@ -45,10 +48,12 @@ public class ArticleService implements IArticleService {
                                         .orElse(0L)
                         );
                         keywordFound.orElseThrow();
-                        k.setKeyword(keywordFound.get());
+                        k.setArticleKeywordPK(new ArticleKeywordPK(save.getId(), keywordFound.get().getId()));
                         return k;
                     })
                     .collect(Collectors.toSet());
+
+            articleKeywordRepository.saveAll(keywords);
 
             Set<ArticleAuthor> authors = article.getAuthors().stream()
                     .map(author -> {
@@ -57,15 +62,12 @@ public class ArticleService implements IArticleService {
                                         .orElse(0L)
                         );
                         authorFound.orElseThrow();
-                        author.setAuthor(authorFound.get());
+                        author.setArticleAuthorPK(new ArticleAuthorPK(save.getId(), authorFound.get().getId()));
                         return author;
                     })
                     .collect(Collectors.toSet());
 
-            article.setKeywords(keywords);
-            article.setAuthors(authors);
-
-            Article save = articleRepository.save(article);
+            articleAuthorRepository.saveAll(authors);
 
             emitter.onSuccess(save.getId());
         });
@@ -88,8 +90,36 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
+    @Transactional
     public Completable update(Article article) {
-        return null;
+        return Completable.create(emitter -> {
+
+            Optional<Article> articleFound = articleRepository.findById(article.getId());
+
+            if (articleFound.isPresent()) {
+
+                articleFound.get().setHeader(article.getHeader() != null ? article.getHeader() : articleFound.get().getHeader());
+                articleFound.get().setShortDescription(article.getShortDescription() != null ? article.getShortDescription() : articleFound.get().getShortDescription());
+                articleFound.get().setPublishDate(article.getPublishDate() != null ? article.getPublishDate() : articleFound.get().getPublishDate());
+                articleFound.get().setText(article.getText() != null ? article.getText() : articleFound.get().getText());
+
+                articleRepository.save(articleFound.get());
+
+                if (article.getKeywords() != null && article.getKeywords().size() > 0) {
+                    article.getKeywords().forEach(k -> articleKeywordRepository.save(new ArticleKeyword(new ArticleKeywordPK(article.getId(), k.getArticleKeywordPK().getKeywordId()))));
+                }
+
+                if (article.getAuthors() != null && article.getAuthors().size() > 0) {
+                    article.getAuthors().forEach(author -> articleAuthorRepository.save(new ArticleAuthor(new ArticleAuthorPK(article.getId(), author.getArticleAuthorPK().getAuthorId()))));
+                }
+
+
+                emitter.onComplete();
+
+            } else {
+                emitter.onError(new EntityNotFoundException());
+            }
+        });
     }
 
     @Override

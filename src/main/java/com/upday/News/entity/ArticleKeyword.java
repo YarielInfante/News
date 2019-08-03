@@ -1,11 +1,12 @@
 package com.upday.News.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Represents the relationship between Article entity and Keyword entity.
@@ -15,25 +16,26 @@ import javax.persistence.*;
  * @see Entity
  * @see lombok
  */
-@Entity
-@Data
-@Builder
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-public class ArticleKeyword {
+@NoArgsConstructor
+@Entity
+@Table(name = "article_keyword")
+public class ArticleKeyword implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @ManyToOne
-    @JoinColumn(name = "article_id")
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected ArticleKeywordPK articleKeywordPK = new ArticleKeywordPK();
+    @JoinColumn(name = "article_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Article article;
-    @ManyToOne
-    @JoinColumn(name = "keyword_id")
+    @JoinColumn(name = "keyword_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
     private Keyword keyword;
 
-    public ArticleKeyword(Keyword keyword) {
-        this.keyword = keyword;
+    public ArticleKeyword(ArticleKeywordPK articleKeywordPK) {
+        this.articleKeywordPK = articleKeywordPK;
     }
 
     public ArticleKeyword(Article article, Keyword keyword) {

@@ -17,5 +17,8 @@ INSERT INTO KEYWORD
 VALUES (6, 'programming');
 
 INSERT INTO AUTHOR
-VALUES (1, 'Kathy Sierra')
+VALUES (1, 'Kathy Sierra');
+
+INSERT INTO AUTHOR
+VALUES (2, 'Michael Jordan')
 

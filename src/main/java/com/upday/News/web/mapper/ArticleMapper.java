@@ -5,15 +5,13 @@ import com.upday.News.utility.DateUtil;
 import com.upday.News.web.dto.request.AddArticleRequest;
 import com.upday.News.web.dto.request.AddAuthorRequest;
 import com.upday.News.web.dto.request.AddKeywordRequest;
+import com.upday.News.web.dto.request.UpdateArticleRequest;
 import com.upday.News.web.dto.response.ArticleResponse;
 import org.springframework.beans.BeanUtils;
 
-import javax.validation.constraints.Size;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Article's mapper class. It maps the entity Article to Dto and vice versa.
@@ -56,6 +54,41 @@ public class ArticleMapper {
     };
 
     /**
+     * Maps an instance of AddArticleRequest to an Article entity.
+     *
+     * @param updateArticleRequest instance of AddArticleRequest
+     * @return an instance of Article entity
+     * @see BeanUtils
+     * @see DateUtil
+     */
+    public static Article toArticle(long id, UpdateArticleRequest updateArticleRequest) {
+
+        Article articleEntity = new Article();
+
+        BeanUtils.copyProperties(updateArticleRequest, articleEntity);
+
+        articleEntity.setId(id);
+
+        articleEntity.setPublishDate(updateArticleRequest.getPublishDate() != null ? DateUtil.stringToDate(updateArticleRequest.getPublishDate()) : null);
+
+        // creating ArticleKeyword instances based on the string array of keywords
+        Set<ArticleKeyword> articleKeywords = updateArticleRequest.getKeywords() != null ? updateArticleRequest.getKeywords().stream()
+                .map(keyword -> new ArticleKeyword(new ArticleKeywordPK(articleEntity.getId(), keyword.getId())))
+                .collect(Collectors.toSet()) : null;
+
+        // creating ArticleKeyword instances based on the string array of keywords
+        Set<ArticleAuthor> articleAuthors = updateArticleRequest.getAuthors() != null ? updateArticleRequest.getAuthors().stream()
+                .map(author -> new ArticleAuthor(new ArticleAuthorPK(articleEntity.getId(), author.getId())))
+                .collect(Collectors.toSet()) : null;
+
+        articleEntity.setKeywords(articleKeywords);
+        articleEntity.setAuthors(articleAuthors);
+
+        return articleEntity;
+    }
+
+
+    /**
      * Maps an instance of Article entity to an ArticleResponse.
      *
      * @param article instance of Article entity
@@ -76,7 +109,7 @@ public class ArticleMapper {
         articleResponse.setKeywords(keywords);
 
         Set<AddAuthorRequest> authors = article.getAuthors().stream()
-                .map(author -> new AddAuthorRequest(author.getId(), author.getAuthor().getName()))
+                .map(author -> new AddAuthorRequest(author.getAuthor().getId(), author.getAuthor().getName()))
                 .collect(Collectors.toSet());
 
         articleResponse.setAuthors(authors);
