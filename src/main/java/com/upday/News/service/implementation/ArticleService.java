@@ -124,6 +124,22 @@ public class ArticleService implements IArticleService {
 
     @Override
     public Completable delete(long id) {
-        return null;
+        return Completable.create(completableSubscriber -> {
+
+            Optional<Article> articleFound = articleRepository.findById(id);
+
+            if (articleFound.isPresent()) {
+
+                articleRepository.delete(articleFound.get());
+
+                completableSubscriber.onComplete();
+
+
+            } else {
+
+                completableSubscriber.onError(new EntityNotFoundException());
+
+            }
+        });
     }
 }

@@ -100,4 +100,23 @@ public class ArticleRestController {
     }
 
 
+    /**
+     * Http Delete method to update an Article.
+     *
+     * @param articleId id of article
+     * @return a http 200 ok status.
+     */
+    @DeleteMapping(
+            value = "/{articleId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Single<ResponseEntity<Response>> deleteBook(@PathVariable long articleId) {
+
+        return articleService.delete(articleId)
+                .subscribeOn(Schedulers.io())
+                .toSingle(() -> ResponseEntity.ok(Response.successNoData()));
+
+    }
+
+
 }
