@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public final class DateUtil {
 
-    public static final String PATTERN = "MM-dd-YYYY";
+    public static final String PATTERN = "MM-dd-yyyy";
 
     /**
      * Converts a string date into a Date instance based on pattern. If an error occurs it returns a null.
