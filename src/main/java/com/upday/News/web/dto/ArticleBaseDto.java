@@ -1,9 +1,13 @@
 package com.upday.News.web.dto;
 
-import lombok.*;
+import com.upday.News.web.dto.request.AddAuthorRequest;
+import com.upday.News.web.dto.request.AddKeywordRequest;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 
 /**
  * DTO base article class.
@@ -17,7 +21,7 @@ public class ArticleBaseDto {
     private String header;
     private String shortDescription;
     private String publishDate;
-    private String author;
     private String text;
-    private List<String> keywords;
+    private Set<AddKeywordRequest> keywords;
+    private Set<AddAuthorRequest> authors;
 }

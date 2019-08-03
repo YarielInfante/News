@@ -1,9 +1,11 @@
-package com.upday.News.web;
+package com.upday.News.web.rest;
 
+import com.upday.News.entity.Article;
 import com.upday.News.service.IArticleService;
 import com.upday.News.web.dto.Response;
 import com.upday.News.web.dto.request.AddArticleRequest;
 import com.upday.News.web.dto.response.ArticleResponse;
+import com.upday.News.web.mapper.ArticleMapper;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-
-import static com.upday.News.web.mapper.ArticleMapper.toArticle;
-import static com.upday.News.web.mapper.ArticleMapper.toArticleResponse;
+import java.util.Optional;
 
 /**
  * Rest controller for Articles. Here you can find all articles endpoint's operations.
@@ -50,7 +50,11 @@ public class ArticleRestController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public Single<ResponseEntity> addAuthor(@Valid @RequestBody final AddArticleRequest addArticleRequest) {
-        return articleService.add(toArticle(addArticleRequest))
+
+        // Mapping to Article entity
+        Article article = Optional.of(addArticleRequest).map(ArticleMapper.toArticle).get();
+
+        return articleService.add(article)
                 .subscribeOn(Schedulers.io())
                 .map(s -> ResponseEntity
                         .created(URI.create("/api/articles/" + s)).build());
@@ -69,7 +73,12 @@ public class ArticleRestController {
     public Single<ResponseEntity<Response<ArticleResponse>>> getArticleById(@PathVariable(value = "articleId") long articleId) {
         return articleService.getOneId(articleId)
                 .subscribeOn(Schedulers.io())
-                .map(article -> ResponseEntity.ok(Response.successWithData(toArticleResponse(article))));
+                .map(article -> ResponseEntity.ok(
+                        Response.successWithData
+                                (       // Mapping to ArticleResponse
+                                        Optional.of(article).map(ArticleMapper.toArticleResponse).get())
+                        )
+                );
     }
 
 

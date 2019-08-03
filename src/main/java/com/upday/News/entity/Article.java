@@ -4,8 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Represents an Article entity.
@@ -32,9 +32,10 @@ public class Article {
     private String shortDescription;
     @Column(name = "publish_date")
     private Date publishDate;
-    private String author;
     private String text;
     @OneToMany(mappedBy = "id", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Collection<ArticleKeyword> keywords;
+    private Set<ArticleKeyword> keywords;
+    @OneToMany(mappedBy = "id", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<ArticleAuthor> authors;
 
 }
