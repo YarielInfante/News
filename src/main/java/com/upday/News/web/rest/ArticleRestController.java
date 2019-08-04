@@ -217,19 +217,19 @@ public class ArticleRestController {
     /**
      * Maps articles entities to ArticleDto
      *
-     * @param articles a list of articles paginated
+     * @param articlePage a list of articles paginated
      * @return a list of ArticleDto paginated
      */
-    private Response<Optional<Page<ArticleDto>>> mapArticlePage(Optional<Page<Article>> articles) {
+    private Response<Optional<Page<ArticleDto>>> mapArticlePage(Optional<Page<Article>> articlePage) {
         return
                 Response.successWithData
                         (
-                                articles.map(articles1 -> {
-                                    List<ArticleDto> list = articles1.getContent()
+                                articlePage.map(articles -> {
+                                    List<ArticleDto> list = articles.getContent()
                                             .stream()
                                             .map(auth -> Optional.of(auth).map(ArticleMapper.articleToArticleResponse).get())
                                             .collect(Collectors.toList());
-                                    return new PageImpl<>(list, articles1.getPageable(), articles1.getTotalElements());
+                                    return new PageImpl<>(list, articles.getPageable(), articles.getTotalElements());
                                 })
                         )
                 ;

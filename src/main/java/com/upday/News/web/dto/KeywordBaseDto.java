@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KeywordBaseDto {
+public abstract class KeywordBaseDto {
 
-    private long id;
+
     private String keyword;
 }

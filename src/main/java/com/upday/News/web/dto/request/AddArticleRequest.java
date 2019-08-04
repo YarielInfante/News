@@ -22,18 +22,18 @@ public class AddArticleRequest extends ArticleBaseDto {
     @NotEmpty(message = "{required.empty.message}")
     private String text;
 
+    @NotNull(message = "{required.notnull.message}")
+    @NotEmpty(message = "{required.empty.message}")
+    private Set<Long> keywords;
+    @NotNull(message = "{required.notnull.message}")
+    @NotEmpty(message = "{required.empty.message}")
+    private Set<Long> authors;
+
     @Override
     @NotNull(message = "{required.notnull.message}")
     @NotEmpty(message = "{required.empty.message}")
     public String getHeader() {
         return super.getHeader();
-    }
-
-    @Override
-    @NotNull(message = "{required.notnull.message}")
-    @NotEmpty(message = "{required.empty.message}")
-    public Set<AddAuthorRequest> getAuthors() {
-        return super.getAuthors();
     }
 
     @Override
@@ -51,10 +51,4 @@ public class AddArticleRequest extends ArticleBaseDto {
         return super.getPublishDate();
     }
 
-    @Override
-    @NotNull(message = "{required.notnull.message}")
-    @NotEmpty(message = "{required.empty.message}")
-    public Set<AddKeywordRequest> getKeywords() {
-        return super.getKeywords();
-    }
 }
