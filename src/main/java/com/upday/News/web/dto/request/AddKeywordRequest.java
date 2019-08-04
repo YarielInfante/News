@@ -1,7 +1,9 @@
 package com.upday.News.web.dto.request;
 
 import com.upday.News.web.dto.KeywordBaseDto;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -12,16 +14,17 @@ import javax.validation.constraints.NotNull;
  * @see AddArticleRequest
  */
 @NoArgsConstructor
+@Setter
+@Getter
 public class AddKeywordRequest extends KeywordBaseDto {
 
-    public AddKeywordRequest(long id, String keyword) {
-        super(id, keyword);
-    }
-
-    @Override
     @NotNull(message = "{required.notnull.message}")
     @NotEmpty(message = "{required.empty.message}")
-    public long getId() {
-        return super.getId();
+    private long id;
+
+    public AddKeywordRequest(long id, String keyword) {
+        super(keyword);
+        this.id = id;
     }
+
 }

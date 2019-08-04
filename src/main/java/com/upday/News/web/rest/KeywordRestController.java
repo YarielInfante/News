@@ -2,9 +2,12 @@ package com.upday.News.web.rest;
 
 import com.upday.News.service.IKeywordService;
 import com.upday.News.web.dto.Response;
+import com.upday.News.web.dto.response.KeywordDto;
+import com.upday.News.web.mapper.KeywordMapper;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -43,7 +46,9 @@ public class KeywordRestController {
 
         return keywordService.getAll(pageable)
                 .subscribeOn(Schedulers.io())
-                .map(keywords -> ResponseEntity.ok(Response.successWithData(keywords)));
+                .map(keywordPage -> ResponseEntity.ok(
+                        Response.successWithData(keywordPage.map(keywords -> keywords.map(KeywordMapper.keywordToKeywordDto))))
+                );
 
     }
 }

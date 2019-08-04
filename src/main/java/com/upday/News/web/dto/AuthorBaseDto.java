@@ -13,9 +13,9 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthorBaseDto {
+public abstract class AuthorBaseDto {
 
-    private long id;
+
     private String name;
 }
 

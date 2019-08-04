@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,4 +29,30 @@ public class AuthorService implements IAuthorService {
             emitter.onSuccess(Optional.of(all));
         });
     }
+
+    @Override
+    public Single<Long> addAuthor(Author author) {
+
+        return Single.create(singleSubscriber -> {
+
+            Author save = authorRepository.save(author);
+
+            singleSubscriber.onSuccess(save.getId());
+
+        });
+    }
+
+    @Override
+    public Single<Optional<List<Author>>> getByName(String name) {
+
+        return Single.create(emitter -> {
+
+            Optional<List<Author>> author = authorRepository.findByNameIgnoreCaseContaining("%" + name + "%");
+//            Optional<Author> author = authorRepository.findByNameIgnoreCaseContaining(name );
+
+            emitter.onSuccess(author);
+        });
+    }
+
+
 }

@@ -8,8 +8,11 @@ import com.upday.News.web.dto.request.AddKeywordRequest;
 import com.upday.News.web.dto.request.UpdateArticleRequest;
 import com.upday.News.web.dto.response.ArticleDto;
 import com.upday.News.web.dto.response.ArticleSingleDto;
+import com.upday.News.web.dto.response.AuthorDto;
+import com.upday.News.web.dto.response.KeywordDto;
 import org.springframework.beans.BeanUtils;
 
+import javax.persistence.Id;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -40,12 +43,12 @@ public class ArticleMapper {
 
         // creating ArticleKeyword instances based on the string array of keywords
         Set<ArticleKeyword> articleKeywords = addArticleRequest.getKeywords().stream()
-                .map(keyword -> new ArticleKeyword(articleEntity, new Keyword(keyword.getId())))
+                .map(keywordId -> new ArticleKeyword(articleEntity, new Keyword(keywordId)))
                 .collect(Collectors.toSet());
 
         // creating ArticleKeyword instances based on the string array of keywords
         Set<ArticleAuthor> articleAuthors = addArticleRequest.getAuthors().stream()
-                .map(author -> new ArticleAuthor(articleEntity, new Author(author.getId())))
+                .map(authorId -> new ArticleAuthor(articleEntity, new Author(authorId)))
                 .collect(Collectors.toSet());
 
         articleEntity.setKeywords(articleKeywords);
@@ -74,12 +77,12 @@ public class ArticleMapper {
 
         // creating ArticleKeyword instances based on the string array of keywords
         Set<ArticleKeyword> articleKeywords = updateArticleRequest.getKeywords() != null ? updateArticleRequest.getKeywords().stream()
-                .map(keyword -> new ArticleKeyword(new ArticleKeywordPK(articleEntity.getId(), keyword.getId())))
+                .map(keywordId -> new ArticleKeyword(new ArticleKeywordPK(articleEntity.getId(), keywordId)))
                 .collect(Collectors.toSet()) : null;
 
         // creating ArticleKeyword instances based on the string array of keywords
         Set<ArticleAuthor> articleAuthors = updateArticleRequest.getAuthors() != null ? updateArticleRequest.getAuthors().stream()
-                .map(author -> new ArticleAuthor(new ArticleAuthorPK(articleEntity.getId(), author.getId())))
+                .map(authorId -> new ArticleAuthor(new ArticleAuthorPK(articleEntity.getId(), authorId)))
                 .collect(Collectors.toSet()) : null;
 
         articleEntity.setKeywords(articleKeywords);
@@ -103,14 +106,14 @@ public class ArticleMapper {
 
         articleResponse.setPublishDate(DateUtil.dateToString(article.getPublishDate()));
 
-        Set<AddKeywordRequest> keywords = article.getKeywords().stream()
-                .map(kw -> new AddKeywordRequest(kw.getKeyword().getId(), kw.getKeyword().getKeyword()))
+        Set<KeywordDto> keywords = article.getKeywords().stream()
+                .map(kw -> new KeywordDto(kw.getKeyword().getId(), kw.getKeyword().getKeyword()))
                 .collect(Collectors.toSet());
 
         articleResponse.setKeywords(keywords);
 
-        Set<AddAuthorRequest> authors = article.getAuthors().stream()
-                .map(author -> new AddAuthorRequest(author.getAuthor().getId(), author.getAuthor().getName()))
+        Set<AuthorDto> authors = article.getAuthors().stream()
+                .map(author -> new AuthorDto(author.getAuthor().getId(), author.getAuthor().getName()))
                 .collect(Collectors.toSet());
 
         articleResponse.setAuthors(authors);
@@ -132,14 +135,14 @@ public class ArticleMapper {
 
         articleDto.setPublishDate(DateUtil.dateToString(article.getPublishDate()));
 
-        Set<AddKeywordRequest> keywords = article.getKeywords().stream()
-                .map(kw -> new AddKeywordRequest(kw.getKeyword().getId(), kw.getKeyword().getKeyword()))
+        Set<KeywordDto> keywords = article.getKeywords().stream()
+                .map(kw -> new KeywordDto(kw.getKeyword().getId(), kw.getKeyword().getKeyword()))
                 .collect(Collectors.toSet());
 
         articleDto.setKeywords(keywords);
 
-        Set<AddAuthorRequest> authors = article.getAuthors().stream()
-                .map(author -> new AddAuthorRequest(author.getAuthor().getId(), author.getAuthor().getName()))
+        Set<AuthorDto> authors = article.getAuthors().stream()
+                .map(author -> new AuthorDto(author.getAuthor().getId(), author.getAuthor().getName()))
                 .collect(Collectors.toSet());
 
         articleDto.setAuthors(authors);
