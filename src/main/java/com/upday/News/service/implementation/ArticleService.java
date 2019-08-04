@@ -6,11 +6,13 @@ import com.upday.News.service.IArticleService;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -85,9 +87,14 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    public Single<List<Article>> getAll() {
-        return null;
+    public Single<Optional<Page<Article>>> getAll(Pageable pageable) {
+        return Single.create(emitter -> {
+            Page<Article> articles = articleRepository.findAll(pageable);
+
+            emitter.onSuccess(Optional.ofNullable(articles));
+        });
     }
+
 
     @Override
     @Transactional
@@ -140,6 +147,35 @@ public class ArticleService implements IArticleService {
                 completableSubscriber.onError(new EntityNotFoundException());
 
             }
+        });
+    }
+
+    @Override
+    public Single<Optional<Page<Article>>> getAllByAuthorsId(Pageable pageable, Long[] authorsId) {
+        return Single.create(emitter -> {
+
+            Page<Article> articles = articleRepository.findAllByAuthors(pageable, authorsId);
+
+            emitter.onSuccess(Optional.ofNullable(articles));
+        });
+    }
+
+    @Override
+    public Single<Optional<Page<Article>>> getAllByPublishDate(Pageable pageable, Date from, Date to) {
+        return Single.create(emitter -> {
+            Page<Article> articles = articleRepository.findAllByPublishDateBetween(from, to, pageable);
+
+            emitter.onSuccess(Optional.ofNullable(articles));
+        });
+    }
+
+    @Override
+    public Single<Optional<Page<Article>>> getAllByKeywordsId(Pageable pageable, Long[] keywordsId) {
+        return Single.create(emitter -> {
+
+            Page<Article> articles = articleRepository.findAllByKeywords(pageable, keywordsId);
+
+            emitter.onSuccess(Optional.ofNullable(articles));
         });
     }
 }

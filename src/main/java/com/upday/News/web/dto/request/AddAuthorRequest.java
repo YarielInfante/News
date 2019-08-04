@@ -1,23 +1,22 @@
 package com.upday.News.web.dto.request;
 
 import com.upday.News.web.dto.AuthorBaseDto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+@NoArgsConstructor
+@Getter
+@Setter
 public class AddAuthorRequest extends AuthorBaseDto {
 
-    public AddAuthorRequest() {
-    }
-
-    public AddAuthorRequest(long id, String name) {
-        super(id, name);
-    }
-
-    @Override
     @NotNull(message = "{required.notnull.message}")
     @NotEmpty(message = "{required.empty.message}")
-    public long getId() {
-        return super.getId();
+    @Override
+    public String getName() {
+        return super.getName();
     }
 }

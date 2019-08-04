@@ -27,5 +27,7 @@ public class ArticleAuthorPK implements Serializable {
     @Column(name = "author_id")
     private long authorId;
 
-
+    public ArticleAuthorPK(@NotNull long authorId) {
+        this.authorId = authorId;
+    }
 }
