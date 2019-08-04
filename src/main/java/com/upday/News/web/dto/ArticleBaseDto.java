@@ -21,7 +21,6 @@ public class ArticleBaseDto {
     private String header;
     private String shortDescription;
     private String publishDate;
-    private String text;
     private Set<AddKeywordRequest> keywords;
     private Set<AddAuthorRequest> authors;
 }

@@ -3,8 +3,11 @@ package com.upday.News.service;
 import com.upday.News.entity.Article;
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class takes care of all business logic operations on the entity Article. It handles CRUD operations as well as some business rules.
@@ -32,14 +35,14 @@ public interface IArticleService {
     Single<Article> getOneId(long id);
 
     /**
-     * Look of all articles
+     * Look for of all articles
      *
      * @return a list of articles
      * @see Article
      * @see Article
      * @see List
      */
-    Single<List<Article>> getAll();
+    Single<Optional<Page<Article>>> getAll(Pageable pageable);
 
     /**
      * Update an article based of the instance of article passed. To find which article to update it takes the Id of the instance passed.
@@ -60,4 +63,13 @@ public interface IArticleService {
      */
     Completable delete(long id);
 
+    /**
+     * Look of all articles for given authors
+     *
+     * @return a list of articles
+     * @see Article
+     * @see Article
+     * @see List
+     */
+    Single<Optional<Page<Article>>> getAllByAuthorsId(Pageable pageable, Long[] authorsId);
 }

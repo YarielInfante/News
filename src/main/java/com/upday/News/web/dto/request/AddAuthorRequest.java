@@ -1,14 +1,13 @@
 package com.upday.News.web.dto.request;
 
 import com.upday.News.web.dto.AuthorBaseDto;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+@NoArgsConstructor
 public class AddAuthorRequest extends AuthorBaseDto {
-
-    public AddAuthorRequest() {
-    }
 
     public AddAuthorRequest(long id, String name) {
         super(id, name);

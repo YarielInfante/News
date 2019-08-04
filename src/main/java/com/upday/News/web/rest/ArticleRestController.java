@@ -5,18 +5,26 @@ import com.upday.News.service.IArticleService;
 import com.upday.News.web.dto.Response;
 import com.upday.News.web.dto.request.AddArticleRequest;
 import com.upday.News.web.dto.request.UpdateArticleRequest;
-import com.upday.News.web.dto.response.ArticleResponse;
+import com.upday.News.web.dto.response.ArticleDto;
+import com.upday.News.web.dto.response.ArticleSingleDto;
 import com.upday.News.web.mapper.ArticleMapper;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Rest controller for Articles. Here you can find all articles endpoint's operations.
@@ -69,13 +77,13 @@ public class ArticleRestController {
             value = "/{articleId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Single<ResponseEntity<Response<ArticleResponse>>> getArticleById(@PathVariable(value = "articleId") long articleId) {
+    public Single<ResponseEntity<Response<ArticleSingleDto>>> getArticleById(@PathVariable(value = "articleId") long articleId) {
         return articleService.getOneId(articleId)
                 .subscribeOn(Schedulers.io())
                 .map(article -> ResponseEntity.ok(
                         Response.successWithData
-                                (       // Mapping to ArticleResponse
-                                        Optional.of(article).map(ArticleMapper.toArticleResponse).get())
+                                (       // Mapping to ArticleDto
+                                        Optional.of(article).map(ArticleMapper.articleToArticleSingleDto).get())
                         )
                 );
     }
@@ -94,7 +102,7 @@ public class ArticleRestController {
     public Single<ResponseEntity<Response>> updateArticle(@PathVariable long articleId, @Valid @RequestBody final UpdateArticleRequest updateArticleRequest) {
 
 
-        return articleService.update(ArticleMapper.toArticle(articleId, updateArticleRequest))
+        return articleService.update(ArticleMapper.updateArticleToArticle(articleId, updateArticleRequest))
                 .subscribeOn(Schedulers.io())
                 .toSingle(() -> ResponseEntity.ok(Response.successNoData()));
     }
@@ -118,5 +126,74 @@ public class ArticleRestController {
 
     }
 
+    /**
+     * Http Get method to get all articles for a given param.
+     *
+     * @param pageable  pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @param authorsId an array of authors' id
+     * @return a list paginated of articles
+     * @see Single
+     * @see Response
+     */
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Single<ResponseEntity<Response>> getAll(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(name = "authorsId", required = false) Long[] authorsId
+    ) {
+
+        if (authorsId != null && authorsId.length > 0) {
+            return getAllByAuthorsId(pageable, authorsId);
+        }
+
+        return getAll(pageable);
+    }
+
+    /**
+     * Gets all articles
+     *
+     * @param pageable pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @return a list paginated of articles
+     */
+    private Single<ResponseEntity<Response>> getAll(Pageable pageable) {
+        return articleService.getAll(pageable)
+                .subscribeOn(Schedulers.io())
+                .map(articles -> ResponseEntity.ok(mapArticlePage(articles)));
+    }
+
+
+    /**
+     * Gets all articles for a given set of authors.
+     *
+     * @param pageable pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @return a list paginated of articles
+     */
+    private Single<ResponseEntity<Response>> getAllByAuthorsId(Pageable pageable, Long[] authorsId) {
+        return articleService.getAllByAuthorsId(pageable, authorsId)
+                .subscribeOn(Schedulers.io())
+                .map(articles -> ResponseEntity.ok(mapArticlePage(articles)));
+    }
+
+    /**
+     * Maps articles entities to ArticleDto
+     * @param articles
+     * @return
+     */
+    private Response<Optional<PageImpl<ArticleDto>>> mapArticlePage(Optional<Page<Article>> articles) {
+        return
+                Response.successWithData
+                        (
+                                articles.map(articles1 -> {
+                                    List<ArticleDto> list = articles1.getContent()
+                                            .stream()
+                                            .map(auth -> Optional.of(auth).map(ArticleMapper.articleToArticleResponse).get())
+                                            .collect(Collectors.toList());
+                                    return new PageImpl<>(list, articles1.getPageable(), articles1.getTotalElements());
+                                })
+                        )
+                ;
+
+    }
 
 }
