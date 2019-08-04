@@ -2,6 +2,7 @@ package com.upday.News.web.rest;
 
 import com.upday.News.entity.Article;
 import com.upday.News.service.IArticleService;
+import com.upday.News.utility.DateUtil;
 import com.upday.News.web.dto.Response;
 import com.upday.News.web.dto.request.AddArticleRequest;
 import com.upday.News.web.dto.request.UpdateArticleRequest;
@@ -16,12 +17,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -140,11 +143,19 @@ public class ArticleRestController {
     )
     public Single<ResponseEntity<Response>> getAll(
             @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam(name = "authorsId", required = false) Long[] authorsId
+            @RequestParam(name = "authorsId", required = false) Long[] authorsId,
+            @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateFrom,
+            @RequestParam(name = "dateTo", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateTo
     ) {
-
+        // Validates if an array of authors was passed in order to return a list of articles for a given set of authors id
         if (authorsId != null && authorsId.length > 0) {
             return getAllByAuthorsId(pageable, authorsId);
+
+            // Validates if parameters dateFrom or dateTo were password in order to return a list of articles for a given set of dates
+        } else if (dateFrom != null || dateTo != null) {
+            dateFrom = dateFrom != null ? dateFrom : DateUtil.minDate();
+            dateTo = dateTo != null ? dateTo : DateUtil.maxDate();
+            return getAllByPublishDate(pageable, dateFrom, dateTo);
         }
 
         return getAll(pageable);
@@ -176,11 +187,24 @@ public class ArticleRestController {
     }
 
     /**
-     * Maps articles entities to ArticleDto
-     * @param articles
-     * @return
+     * Gets all articles for a given set of authors.
+     *
+     * @param pageable pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @return a list paginated of articles
      */
-    private Response<Optional<PageImpl<ArticleDto>>> mapArticlePage(Optional<Page<Article>> articles) {
+    private Single<ResponseEntity<Response>> getAllByPublishDate(Pageable pageable, Date from, Date to) {
+        return articleService.getAllByPublishDate(pageable, from, to)
+                .subscribeOn(Schedulers.io())
+                .map(articles -> ResponseEntity.ok(mapArticlePage(articles)));
+    }
+
+    /**
+     * Maps articles entities to ArticleDto
+     *
+     * @param articles a list of articles paginated
+     * @return a list of ArticleDto paginated
+     */
+    private Response<Optional<Page<ArticleDto>>> mapArticlePage(Optional<Page<Article>> articles) {
         return
                 Response.successWithData
                         (

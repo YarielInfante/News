@@ -2,14 +2,20 @@ package com.upday.News.utility;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * This class takes care of Date operations.
  */
 public final class DateUtil {
 
-    public static final String PATTERN = "MM-dd-yyyy";
+    public static final String PATTERN = "dd-MM-yyyy";
+    public static final LocalDate DATE_MIN = LocalDate.of(1900, 1, 1);
+    public static final LocalDate DATE_MAX = LocalDate.of(3000, 1, 1);
 
     /**
      * Converts a string date into a Date instance based on pattern. If an error occurs it returns a null.
@@ -46,4 +52,36 @@ public final class DateUtil {
 
         return dateFormat.format(date);
     }
+
+    /**
+     * Returns a date with a year 1900.
+     *
+     * @return an instance of Date
+     */
+    public static Date minDate() {
+
+        return Optional.of(DATE_MIN).map(localDateToDate).get();
+
+    }
+
+    /**
+     * Returns a date with a year 3000.
+     *
+     * @return an instance of Date
+     */
+    public static Date maxDate() {
+
+        return Optional.of(DATE_MAX).map(localDateToDate).get();
+    }
+
+    /**
+     * Converts a LocalDate into a Date
+     */
+    public static final Function<LocalDate, Date> localDateToDate = localDate -> Date.from(
+            localDate
+                    .atStartOfDay()
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant()
+    );
+
 }

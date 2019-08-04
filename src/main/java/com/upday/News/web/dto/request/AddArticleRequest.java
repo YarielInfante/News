@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 /**
@@ -43,6 +44,7 @@ public class AddArticleRequest extends ArticleBaseDto {
     }
 
     @Override
+    @Pattern(regexp = "^([0-2][0-9]|(3)[0-1])(-)(((0)[0-9])|((1)[0-2]))(-)\\d{4}$", message = "{invalid.date.format}")
     @NotNull(message = "{required.notnull.message}")
     @NotEmpty(message = "{required.empty.message}")
     public String getPublishDate() {

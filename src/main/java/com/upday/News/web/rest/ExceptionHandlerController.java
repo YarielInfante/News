@@ -3,12 +3,15 @@ package com.upday.News.web.rest;
 import com.upday.News.exception.ErrorCode;
 import com.upday.News.web.dto.Response;
 import com.upday.News.web.dto.response.ErrorFieldResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,9 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice
 public class ExceptionHandlerController {
+
+    @Value("${invalid.date.format}")
+    private String formatMessage;
 
     /**
      * Takes care of entities not found
@@ -45,5 +51,21 @@ public class ExceptionHandlerController {
 
 
         return ResponseEntity.badRequest().body(Response.error(ErrorCode.REQUIRED_FIELDS, errors));
+    }
+
+    /**
+     * Takes care of invalid date format
+     *
+     * @param e Exception thrown
+     * @return a http 400 bad request with an error code REQUIRED_FIELDS and the required date field invalid.
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Response> handleInvalidDateFormat(MethodArgumentTypeMismatchException e) {
+
+        if (e.getRequiredType().getCanonicalName().equalsIgnoreCase(Date.class.getCanonicalName())) {
+            return ResponseEntity.badRequest().body(Response.error(ErrorCode.REQUIRED_FIELDS, new ErrorFieldResponse(e.getName(), formatMessage)));
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 }

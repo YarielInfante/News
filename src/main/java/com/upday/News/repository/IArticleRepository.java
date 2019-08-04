@@ -11,6 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -29,4 +30,6 @@ public interface IArticleRepository extends PagingAndSortingRepository<Article, 
 
     @Query("select articles from Article articles inner join articles.authors authors where authors.author.id in :authorsId")
     Page<Article> findAllByAuthors(Pageable pageable, @Param("authorsId") Long[] authors);
+
+    Page<Article> findAllByPublishDateBetween(Date from, Date to, Pageable pageable);
 }
