@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,11 +49,19 @@ public class AuthorService implements IAuthorService {
         return Single.create(emitter -> {
 
             Optional<List<Author>> author = authorRepository.findByNameIgnoreCaseContaining("%" + name + "%");
-//            Optional<Author> author = authorRepository.findByNameIgnoreCaseContaining(name );
 
             emitter.onSuccess(author);
         });
     }
 
+    @Override
+    public Single<Author> getOneId(long id) {
+        return Single.create(emitter -> {
+            Optional<Author> author = authorRepository.findById(id);
 
+            author.ifPresentOrElse(
+                    emitter::onSuccess,
+                    () -> emitter.onError(new EntityNotFoundException()));
+        });
+    }
 }

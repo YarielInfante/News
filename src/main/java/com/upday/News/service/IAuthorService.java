@@ -37,4 +37,14 @@ public interface IAuthorService {
      * @return Author found
      */
     Single<Optional<List<Author>>> getByName(String name);
+
+    /**
+     * Look for an author based on an id passed.
+     *
+     * @param id of article
+     * @return an instance of the article found
+     * @see Author
+     * @see Single
+     */
+    Single<Author> getOneId(long id);
 }

@@ -12,6 +12,12 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 
+/**
+ * Represents an Author entity.
+ *
+ * @see Entity
+ * @see lombok
+ */
 @Getter
 @Setter
 @AllArgsConstructor

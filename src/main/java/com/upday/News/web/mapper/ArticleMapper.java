@@ -3,8 +3,6 @@ package com.upday.News.web.mapper;
 import com.upday.News.entity.*;
 import com.upday.News.utility.DateUtil;
 import com.upday.News.web.dto.request.AddArticleRequest;
-import com.upday.News.web.dto.request.AddAuthorRequest;
-import com.upday.News.web.dto.request.AddKeywordRequest;
 import com.upday.News.web.dto.request.UpdateArticleRequest;
 import com.upday.News.web.dto.response.ArticleDto;
 import com.upday.News.web.dto.response.ArticleSingleDto;
@@ -12,7 +10,6 @@ import com.upday.News.web.dto.response.AuthorDto;
 import com.upday.News.web.dto.response.KeywordDto;
 import org.springframework.beans.BeanUtils;
 
-import javax.persistence.Id;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;

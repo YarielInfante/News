@@ -20,11 +20,8 @@ public class AddKeywordRequest extends KeywordBaseDto {
 
     @NotNull(message = "{required.notnull.message}")
     @NotEmpty(message = "{required.empty.message}")
-    private long id;
-
-    public AddKeywordRequest(long id, String keyword) {
-        super(keyword);
-        this.id = id;
+    @Override
+    public String getKeyword() {
+        return super.getKeyword();
     }
-
 }
