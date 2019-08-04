@@ -4,10 +4,10 @@ import com.upday.News.entity.Author;
 import com.upday.News.service.IAuthorService;
 import com.upday.News.web.dto.Response;
 import com.upday.News.web.dto.request.AddAuthorRequest;
+import com.upday.News.web.dto.response.AuthorDto;
 import com.upday.News.web.mapper.AuthorMapper;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -79,9 +79,30 @@ public class AuthorRestController {
         return authorService.addAuthor(author)
                 .subscribeOn(Schedulers.io())
                 .map(s -> ResponseEntity
-                        .created(URI.create("/api/authors/" + s))
+                        .created(URI.create("/api/v1/authors/" + s))
                         .body(Response.successNoData()));
     }
 
+
+    /**
+     * Http Get method to find an Author by its ID
+     *
+     * @param authorId id of Author
+     * @return an http 200 ok status with the Author entity. It not found returns an http 404 not found status.
+     */
+    @GetMapping(
+            value = "/{authorId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Single<ResponseEntity<Response<AuthorDto>>> getAuthorById(@PathVariable(value = "authorId") long authorId) {
+        return authorService.getOneId(authorId)
+                .subscribeOn(Schedulers.io())
+                .map(author -> ResponseEntity.ok(
+                        Response.successWithData
+                                (       // Mapping to AuthorDto
+                                        Optional.of(author).map(AuthorMapper.authorToAuthorDto).get())
+                        )
+                );
+    }
 
 }

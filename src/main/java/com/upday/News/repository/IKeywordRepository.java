@@ -1,10 +1,13 @@
 package com.upday.News.repository;
 
 import com.upday.News.entity.Keyword;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,11 +22,13 @@ import java.util.Optional;
 @Repository
 public interface IKeywordRepository extends PagingAndSortingRepository<Keyword, Long> {
 
+
     /**
-     * Finds a keyword entity by its keyword value
+     * Finds keywords entity by its keyword value
      *
      * @param keyword a string keyword value
-     * @return a Keyword entity
+     * @return a list of Keyword entity
      */
-    Optional<Keyword> findByKeyword(String keyword);
+    @Query("select keywords from Keyword keywords where upper(keywords.keyword) like upper( :keyword ) ")
+    Optional<List<Keyword>> findByKeywordIgnoreCaseContaining(@Param("keyword") String keyword);
 }

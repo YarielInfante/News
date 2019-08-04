@@ -121,7 +121,7 @@ public class ArticleRestController {
             value = "/{articleId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Single<ResponseEntity<Response>> deleteBook(@PathVariable long articleId) {
+    public Single<ResponseEntity<Response>> deleteArticle(@PathVariable long articleId) {
 
         return articleService.delete(articleId)
                 .subscribeOn(Schedulers.io())

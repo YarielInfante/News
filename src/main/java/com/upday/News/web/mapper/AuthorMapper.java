@@ -7,8 +7,16 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.function.Function;
 
+/**
+ * Author's mapper class. It maps the entity Author to Dto and vice versa.
+ *
+ * @see Author
+ */
 public class AuthorMapper {
 
+    /**
+     * Maps an Author entity to an AuthorDto
+     */
     public static final Function<Author, AuthorDto> authorToAuthorDto = author -> {
         AuthorDto authorDto = new AuthorDto();
 
@@ -18,6 +26,9 @@ public class AuthorMapper {
     };
 
 
+    /**
+     * Maps an AddAuthorRequest to an Author entity
+     */
     public static final Function<AddAuthorRequest, Author> addAuthorRequestToAuthor = addAuthorRequest -> {
         Author author = new Author();
 
