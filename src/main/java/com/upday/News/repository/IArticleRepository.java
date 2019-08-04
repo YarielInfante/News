@@ -1,8 +1,6 @@
 package com.upday.News.repository;
 
 import com.upday.News.entity.Article;
-import com.upday.News.entity.ArticleAuthor;
-import com.upday.News.entity.Author;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -26,10 +23,49 @@ import java.util.List;
 @Repository
 public interface IArticleRepository extends PagingAndSortingRepository<Article, Long> {
 
+    /**
+     * Finds all Articles
+     *
+     * @param pageable pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @return a list of articles paginated
+     * @see Page
+     * @see Pageable
+     */
     Page<Article> findAll(Pageable pageable);
 
+    /**
+     * Finds all Articles for a given set of authors's id
+     *
+     * @param pageable pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @param authors  an array of authors' id
+     * @return a list of articles paginated
+     * @see Page
+     * @see Pageable
+     */
     @Query("select articles from Article articles inner join articles.authors authors where authors.author.id in :authorsId")
     Page<Article> findAllByAuthors(Pageable pageable, @Param("authorsId") Long[] authors);
 
+    /**
+     * Finds all Articles for a given set of dates
+     *
+     * @param pageable pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @param from     date from
+     * @param to       date to
+     * @return a list of articles paginated
+     * @see Page
+     * @see Pageable
+     */
     Page<Article> findAllByPublishDateBetween(Date from, Date to, Pageable pageable);
+
+    /**
+     * Finds all Articles for a given set of keywords
+     *
+     * @param pageable   pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @param keywordsId an array of keywords' id
+     * @return a list of articles paginated
+     * @see Page
+     * @see Pageable
+     */
+    @Query("select articles from Article articles inner join articles.keywords keywords where keywords.keyword.id in :keywordsId")
+    Page<Article> findAllByKeywords(Pageable pageable, @Param("keywordsId") Long[] keywordsId);
 }

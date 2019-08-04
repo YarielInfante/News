@@ -168,4 +168,14 @@ public class ArticleService implements IArticleService {
             emitter.onSuccess(Optional.ofNullable(articles));
         });
     }
+
+    @Override
+    public Single<Optional<Page<Article>>> getAllByKeywordsId(Pageable pageable, Long[] keywordsId) {
+        return Single.create(emitter -> {
+
+            Page<Article> articles = articleRepository.findAllByKeywords(pageable, keywordsId);
+
+            emitter.onSuccess(Optional.ofNullable(articles));
+        });
+    }
 }

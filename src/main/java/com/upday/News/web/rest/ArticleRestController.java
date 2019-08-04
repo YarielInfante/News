@@ -145,7 +145,8 @@ public class ArticleRestController {
             @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(name = "authorsId", required = false) Long[] authorsId,
             @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateFrom,
-            @RequestParam(name = "dateTo", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateTo
+            @RequestParam(name = "dateTo", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateTo,
+            @RequestParam(name = "keywordsId", required = false) Long[] keywordsId
     ) {
         // Validates if an array of authors was passed in order to return a list of articles for a given set of authors id
         if (authorsId != null && authorsId.length > 0) {
@@ -156,6 +157,9 @@ public class ArticleRestController {
             dateFrom = dateFrom != null ? dateFrom : DateUtil.minDate();
             dateTo = dateTo != null ? dateTo : DateUtil.maxDate();
             return getAllByPublishDate(pageable, dateFrom, dateTo);
+
+        } else if (keywordsId != null && keywordsId.length > 0) {
+            return getAllByKeywordsId(pageable, keywordsId);
         }
 
         return getAll(pageable);
@@ -194,6 +198,18 @@ public class ArticleRestController {
      */
     private Single<ResponseEntity<Response>> getAllByPublishDate(Pageable pageable, Date from, Date to) {
         return articleService.getAllByPublishDate(pageable, from, to)
+                .subscribeOn(Schedulers.io())
+                .map(articles -> ResponseEntity.ok(mapArticlePage(articles)));
+    }
+
+    /**
+     * Gets all articles for a given set of keywords.
+     *
+     * @param pageable pagination parameters. Ex: size = 10, page = 1 , sort = ASC
+     * @return a list paginated of articles
+     */
+    private Single<ResponseEntity<Response>> getAllByKeywordsId(Pageable pageable, Long[] keywordsId) {
+        return articleService.getAllByKeywordsId(pageable, keywordsId)
                 .subscribeOn(Schedulers.io())
                 .map(articles -> ResponseEntity.ok(mapArticlePage(articles)));
     }

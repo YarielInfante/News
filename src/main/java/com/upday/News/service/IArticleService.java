@@ -83,4 +83,14 @@ public interface IArticleService {
      * @see List
      */
     Single<Optional<Page<Article>>> getAllByPublishDate(Pageable pageable, Date from, Date to);
+
+    /**
+     * Look of all articles for given set of keywords id
+     *
+     * @return a list of articles
+     * @see Article
+     * @see Article
+     * @see List
+     */
+    Single<Optional<Page<Article>>> getAllByKeywordsId(Pageable pageable, Long[] keywordsId);
 }
