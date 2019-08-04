@@ -15,5 +15,6 @@ import lombok.Setter;
 public class UpdateArticleRequest extends ArticleBaseDto {
 
     private long id;
+    private String text;
 
 }
