@@ -12,11 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ArticleService implements IArticleService {
@@ -156,6 +155,15 @@ public class ArticleService implements IArticleService {
         return Single.create(emitter -> {
 
             Page<Article> articles = articleRepository.findAllByAuthors(pageable, authorsId);
+
+            emitter.onSuccess(Optional.ofNullable(articles));
+        });
+    }
+
+    @Override
+    public Single<Optional<Page<Article>>> getAllByPublishDate(Pageable pageable, Date from, Date to) {
+        return Single.create(emitter -> {
+            Page<Article> articles = articleRepository.findAllByPublishDateBetween(from, to, pageable);
 
             emitter.onSuccess(Optional.ofNullable(articles));
         });
