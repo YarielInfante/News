@@ -79,8 +79,7 @@ public class AuthorRestController {
         return authorService.addAuthor(author)
                 .subscribeOn(Schedulers.io())
                 .map(s -> ResponseEntity
-                        .created(URI.create("/api/v1/authors/" + s))
-                        .body(Response.successNoData()));
+                        .created(URI.create("/api/v1/authors/" + s)).build());
     }
 
 

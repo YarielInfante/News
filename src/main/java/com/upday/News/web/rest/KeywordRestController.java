@@ -82,8 +82,7 @@ public class KeywordRestController {
         return keywordService.addAKeyword(keyword)
                 .subscribeOn(Schedulers.io())
                 .map(s -> ResponseEntity
-                        .created(URI.create("/api/v1/keywords/" + s))
-                        .body(Response.successNoData()));
+                        .created(URI.create("/api/v1/keywords/" + s)).build());
     }
 
 
