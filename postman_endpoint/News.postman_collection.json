@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "62f77c9d-846f-429a-aae0-182d313d1416",
+		"name": "News",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "save article",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"header\": \"News! \",\n    \"shortDescription\": \"More news!\",\n    \"publishDate\": \"31-12-2019\",\n    \"text\": \"text everywhere\",\n    \"authors\": [\n        1\n    ],\n    \"keywords\": [\n        2\n    ]\n}"
+				},
+				"url": "localhost:8080/api/v1/articles"
+			},
+			"response": []
+		},
+		{
+			"name": "get one request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/api/v1/articles/1"
+			},
+			"response": []
+		},
+		{
+			"name": "list of keywords",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/keywords?keyword=car",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"keywords"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "car"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list of authors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/api/v1/authors/2"
+			},
+			"response": []
+		},
+		{
+			"name": "update article",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"header\": \"News! 55555\"\n}"
+				},
+				"url": "localhost:8080/api/v1/articles/1"
+			},
+			"response": []
+		},
+		{
+			"name": "delete an article",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "localhost:8080/api/v1/articles/1"
+			},
+			"response": []
+		},
+		{
+			"name": "list of articles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/articles?",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"articles"
+					],
+					"query": [
+						{
+							"key": "keywordsId",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "dateFrom",
+							"value": "01-01-2018",
+							"disabled": true
+						},
+						{
+							"key": "dateTo",
+							"value": "01-01-2020",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add author",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Yariel Infante\"\n}"
+				},
+				"url": "localhost:8080/api/v1/authors"
+			},
+			"response": []
+		},
+		{
+			"name": "add keyword",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"keyword\": \"hahahaha\"\n}"
+				},
+				"url": "localhost:8080/api/v1/keywords"
+			},
+			"response": []
+		}
+	]
+}

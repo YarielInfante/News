@@ -43,7 +43,12 @@ Each API should only return the data that is really needed to fulfill the use ca
      - HTTP GET at /api/v1/authors?name={value} (finds authors paginated that match with the value)
      - HTTP POST at /api/v1/authors (creates a author)
     
-    
+   
+Definition of endpoint
+---
+There is a .json archive that can be easily imported into postman (api client tool. Download it at https://www.getpostman.com) where you can find 
+all endpoint's definitions.  
+
 
 Program Execution
 ----
@@ -119,4 +124,4 @@ Integration tests were developed using :
        - spring boot test
        - Mockito
             
-            
+          
