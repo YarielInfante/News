@@ -116,6 +116,10 @@ To run compiled code compiled run :
 
         java -jar build/libs/News-0.0.1-SNAPSHOT.jar
         
+To run with a specific profile use the flag -Dspring.profiles.active=dev such as: 
+        
+        java -jar -Dspring.profiles.active=dev build/libs/News-0.0.1-SNAPSHOT.jar        
+        
 Tests
 ---
 
