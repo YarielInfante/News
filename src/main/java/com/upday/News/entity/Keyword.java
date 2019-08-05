@@ -45,4 +45,9 @@ public class Keyword implements Serializable {
     public Keyword(long id) {
         this.id = id;
     }
+
+    public Keyword(long id, @NotNull @Size(min = 1, max = 255) String keyword) {
+        this.id = id;
+        this.keyword = keyword;
+    }
 }

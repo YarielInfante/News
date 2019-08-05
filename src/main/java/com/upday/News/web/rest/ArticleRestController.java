@@ -97,7 +97,7 @@ public class ArticleRestController {
      * @param updateArticleRequest an instance of AddArticleRequest
      * @return a http 201 created status with its uri of entity created. It an error occurs
      */
-    @PatchMapping(
+    @PutMapping(
             value = "/{articleId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
