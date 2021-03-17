@@ -53,7 +53,7 @@ all endpoint's definitions.
 Program Execution
 ----
 System prerequisite:
-- Java 12
+- Java 11
 - Gradle
 
 To make all these requests possible, I used:
